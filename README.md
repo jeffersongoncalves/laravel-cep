@@ -20,6 +20,14 @@ You can install the package via composer:
 composer require jeffersongoncalves/laravel-cep
 ```
 
+## Usage
+
+Publish migration file.
+
+```bash
+php artisan vendor:publish --tag=cep-migrations
+```
+
 ## Testing
 
 ```bash
