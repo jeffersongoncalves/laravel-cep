@@ -30,7 +30,7 @@ class FlushCache implements ShouldQueue
 
         Container::getInstance()
             ->make('cache')
-            ->store($config)
+            ->build($config)
             ->flush();
     }
 }
