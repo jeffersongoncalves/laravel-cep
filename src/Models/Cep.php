@@ -24,16 +24,16 @@ class Cep extends Model
 
     public static function booted(): void
     {
-        static::created(static fn (Model $model) => FlushCache::dispatch());
-        static::updated(static fn (Model $model) => FlushCache::dispatch());
-        static::deleted(static fn (Model $model) => FlushCache::dispatch());
+        static::created(fn(Model $model) => FlushCache::dispatch());
+        static::updated(fn(Model $model) => FlushCache::dispatch());
+        static::deleted(fn(Model $model) => FlushCache::dispatch());
     }
 
     public static function checkCep(?string $cep): bool
     {
         $result = self::findByCep($cep);
 
-        return ! empty($result['cep']);
+        return !empty($result['cep']);
     }
 
     public static function findByCep(?string $cep): array
@@ -51,7 +51,7 @@ class Cep extends Model
             return self::query()->findOrFail($cep)->toArray();
         } catch (ModelNotFoundException $ignored) {
             $request = Http::get("https://brasilapi.com.br/api/cep/v1/{$cep}")->json();
-            if (! empty($request['cep'])) {
+            if (!empty($request['cep'])) {
                 $data = [
                     'cep' => $cep,
                     'state' => $request['state'],
@@ -71,23 +71,43 @@ class Cep extends Model
                 return $data;
             }
             $request = Http::get("https://viacep.com.br/ws/{$cep}/json/")->json();
-            if (! empty($request['erro'])) {
+            if (!empty($request['cep'])) {
+                $data = [
+                    'cep' => $cep,
+                    'state' => $request['uf'],
+                    'city' => $request['localidade'],
+                    'neighborhood' => $request['bairro'] ?? '',
+                    'street' => $request['logradouro'] ?? '',
+                ];
+                self::updateOrCreate([
+                    'cep' => $cep,
+                ], [
+                    'state' => $request['uf'],
+                    'city' => $request['localidade'],
+                    'neighborhood' => $request['bairro'] ?? '',
+                    'street' => $request['logradouro'] ?? '',
+                ]);
+
+                return $data;
+            }
+            $request = Http::get("https://cep.awesomeapi.com.br/json/{$cep}")->json();
+            if (!empty($request['code'])) {
                 return self::getResult();
             }
             $data = [
                 'cep' => $cep,
-                'state' => $request['uf'],
-                'city' => $request['localidade'],
-                'neighborhood' => $request['bairro'] ?? '',
-                'street' => $request['logradouro'] ?? '',
+                'state' => $request['state'],
+                'city' => $request['city'],
+                'neighborhood' => $request['district'] ?? '',
+                'street' => $request['address'] ?? '',
             ];
             self::updateOrCreate([
                 'cep' => $cep,
             ], [
-                'state' => $request['uf'],
-                'city' => $request['localidade'],
-                'neighborhood' => $request['bairro'] ?? '',
-                'street' => $request['logradouro'] ?? '',
+                'state' => $request['state'],
+                'city' => $request['city'],
+                'neighborhood' => $request['district'] ?? '',
+                'street' => $request['address'] ?? '',
             ]);
 
             return $data;
