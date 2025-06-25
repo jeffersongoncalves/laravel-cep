@@ -91,6 +91,9 @@ class Cep extends Model
                 return $data;
             }
             $request = Http::get("https://cep.awesomeapi.com.br/json/{$cep}")->json();
+            if(is_null($request)){
+                return self::getResult();
+            }
             if (!empty($request['code'])) {
                 return self::getResult();
             }
