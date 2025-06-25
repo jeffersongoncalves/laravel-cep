@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.0.4 - 2025-06-25
+
+**Full Changelog**: https://github.com/jeffersongoncalves/laravel-cep/compare/1.0.3...1.0.4
+
 ## 1.0.3 - 2025-06-25
 
 ### What's Changed
