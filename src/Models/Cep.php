@@ -2,17 +2,13 @@
 
 namespace JeffersonGoncalves\Cep\Models;
 
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
-use JeffersonGoncalves\Cep\Jobs\FlushCache;
 
 class Cep extends Model
 {
-    use Cachable;
-
     public $incrementing = false;
 
     protected int $cacheCooldownSeconds = 86400;
@@ -22,13 +18,6 @@ class Cep extends Model
     protected $primaryKey = 'cep';
 
     protected $guarded = [];
-
-    public static function booted(): void
-    {
-        static::created(fn(Model $model) => FlushCache::dispatch());
-        static::updated(fn(Model $model) => FlushCache::dispatch());
-        static::deleted(fn(Model $model) => FlushCache::dispatch());
-    }
 
     public static function checkCep(?string $cep): bool
     {
