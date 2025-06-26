@@ -25,16 +25,16 @@ class Cep extends Model
 
     public static function booted(): void
     {
-        static::created(fn(Model $model) => FlushCache::dispatch());
-        static::updated(fn(Model $model) => FlushCache::dispatch());
-        static::deleted(fn(Model $model) => FlushCache::dispatch());
+        static::created(fn (Model $model) => FlushCache::dispatch());
+        static::updated(fn (Model $model) => FlushCache::dispatch());
+        static::deleted(fn (Model $model) => FlushCache::dispatch());
     }
 
     public static function checkCep(?string $cep): bool
     {
         $result = self::findByCep($cep);
 
-        return !empty($result['cep']);
+        return ! empty($result['cep']);
     }
 
     public static function findByCep(?string $cep): array
@@ -53,7 +53,7 @@ class Cep extends Model
         } catch (ModelNotFoundException $ignored) {
             try {
                 $request = Http::timeout(5)->get("https://brasilapi.com.br/api/cep/v1/{$cep}")->json();
-                if (!empty($request['cep'])) {
+                if (! empty($request['cep'])) {
                     $data = [
                         'cep' => $cep,
                         'state' => $request['state'],
@@ -76,7 +76,7 @@ class Cep extends Model
             }
             try {
                 $request = Http::timeout(5)->get("https://viacep.com.br/ws/{$cep}/json/")->json();
-                if (!empty($request['cep'])) {
+                if (! empty($request['cep'])) {
                     $data = [
                         'cep' => $cep,
                         'state' => $request['uf'],
@@ -102,7 +102,7 @@ class Cep extends Model
                 if (is_null($request)) {
                     return self::getResult();
                 }
-                if (!empty($request['code'])) {
+                if (! empty($request['code'])) {
                     return self::getResult();
                 }
                 $data = [
@@ -124,6 +124,7 @@ class Cep extends Model
                 return $data;
             } catch (ConnectionException $ignored) {
             }
+
             return self::getResult();
         }
     }
