@@ -1,7 +1,7 @@
 <?php
 
-use JeffersonGoncalves\Cep\Models\Cep;
 use Illuminate\Support\Facades\Http;
+use JeffersonGoncalves\Cep\Models\Cep;
 
 describe('Cep Model', function () {
     beforeEach(function () {
