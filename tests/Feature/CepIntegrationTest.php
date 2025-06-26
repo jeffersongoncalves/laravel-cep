@@ -1,8 +1,8 @@
 <?php
 
-use JeffersonGoncalves\Cep\Models\Cep;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
+use JeffersonGoncalves\Cep\Models\Cep;
 
 describe('Cep Integration Tests', function () {
     beforeEach(function () {
