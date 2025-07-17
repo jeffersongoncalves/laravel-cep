@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.0 - 2025-07-17
+
+### What's Changed
+
+* chore: Configure Renovate by @renovate[bot] in https://github.com/jeffersongoncalves/laravel-cep/pull/3
+* Delete .github/FUNDING.yml by @jeffersongoncalves in https://github.com/jeffersongoncalves/laravel-cep/pull/5
+* Delete renovate.json by @jeffersongoncalves in https://github.com/jeffersongoncalves/laravel-cep/pull/6
+
+### New Contributors
+
+* @renovate[bot] made their first contribution in https://github.com/jeffersongoncalves/laravel-cep/pull/3
+* @jeffersongoncalves made their first contribution in https://github.com/jeffersongoncalves/laravel-cep/pull/5
+
+**Full Changelog**: https://github.com/jeffersongoncalves/laravel-cep/compare/1.0.6...1.1.0
+
 ## 1.0.6 - 2025-06-26
 
 **Full Changelog**: https://github.com/jeffersongoncalves/laravel-cep/compare/1.0.5...1.0.6
