@@ -41,7 +41,7 @@ class Cep extends Model
             return self::query()->findOrFail($cep)->toArray();
         } catch (ModelNotFoundException $ignored) {
             try {
-                $request = Http::get("https://brasilapi.com.br/api/cep/v1/{$cep}")->json();
+                $request = Http::timeout(5)->get("https://brasilapi.com.br/api/cep/v1/{$cep}")->json();
                 if (! empty($request['cep'])) {
                     $data = [
                         'cep' => $cep,
@@ -64,7 +64,7 @@ class Cep extends Model
             } catch (ConnectionException $ignored) {
             }
             try {
-                $request = Http::get("https://viacep.com.br/ws/{$cep}/json/")->json();
+                $request = Http::timeout(5)->get("https://viacep.com.br/ws/{$cep}/json/")->json();
                 if (! empty($request['cep'])) {
                     $data = [
                         'cep' => $cep,
@@ -87,7 +87,7 @@ class Cep extends Model
             } catch (ConnectionException $ignored) {
             }
             try {
-                $request = Http::get("https://cep.awesomeapi.com.br/json/{$cep}")->json();
+                $request = Http::timeout(5)->get("https://cep.awesomeapi.com.br/json/{$cep}")->json();
                 if (is_null($request)) {
                     return self::getResult();
                 }
