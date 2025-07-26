@@ -228,6 +228,7 @@ describe('Cep Integration Tests', function () {
             'https://brasilapi.com.br/api/cep/v1/01310300' => Http::response([], 500),
             'https://viacep.com.br/ws/01310300/json/' => Http::response([], 500),
             'https://cep.awesomeapi.com.br/json/01310300' => Http::response([
+                'cep' => '01310-300',
                 'state' => 'SP',
                 'city' => 'São Paulo',
                 'district' => 'Bela Vista',

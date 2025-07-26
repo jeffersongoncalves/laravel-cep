@@ -169,6 +169,7 @@ describe('Cep Model', function () {
                 'https://viacep.com.br/ws/01310100/json/' => Http::response([], 500),
                 'https://cep.awesomeapi.com.br/json/01310100' => Http::response([
                     'code' => null,
+                    'cep' => '01310100',
                     'state' => 'SP',
                     'city' => 'São Paulo',
                     'district' => 'Bela Vista',
