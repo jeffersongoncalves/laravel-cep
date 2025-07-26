@@ -11,8 +11,6 @@ class Cep extends Model
 {
     public $incrementing = false;
 
-    protected int $cacheCooldownSeconds = 86400;
-
     protected $table = 'cep';
 
     protected $primaryKey = 'cep';
