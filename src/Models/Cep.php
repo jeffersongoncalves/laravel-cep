@@ -7,6 +7,26 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use JeffersonGoncalves\Cep\Services\CepService;
 use JeffersonGoncalves\Cep\Support\CepSupport;
 
+/**
+ * @property string $cep
+ * @property string|null $state
+ * @property string|null $city
+ * @property string|null $neighborhood
+ * @property string|null $street
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep whereCep($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep whereNeighborhood($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep whereState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep whereStreet($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Cep extends Model
 {
     public $incrementing = false;
