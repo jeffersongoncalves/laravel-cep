@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.2 - 2026-02-24
+
+### What's Changed
+
+- Add Laravel 13.x support in composer.json and CI test matrix
+- Add orchestra/testbench ^11.0 for Laravel 13 testing
+
 ## 1.1.1 - 2025-07-26
 
 **Full Changelog**: https://github.com/jeffersongoncalves/laravel-cep/compare/1.1.0...1.1.1
