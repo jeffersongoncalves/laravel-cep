@@ -3,7 +3,7 @@
 namespace JeffersonGoncalves\Cep\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
 use JeffersonGoncalves\Cep\Services\CepService;
 use JeffersonGoncalves\Cep\Support\CepSupport;
 
@@ -13,8 +13,8 @@ use JeffersonGoncalves\Cep\Support\CepSupport;
  * @property string|null $city
  * @property string|null $neighborhood
  * @property string|null $street
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cep newQuery()
@@ -48,20 +48,69 @@ class Cep extends Model
 
     public static function findByCep(?string $cep): array
     {
-        if (empty($cep)) {
+        $cep = self::sanitize($cep);
+
+        if ($cep === null) {
             return CepSupport::getResult();
         }
+
+        $model = self::query()->find($cep);
+
+        if ($model !== null && ! $model->isStale()) {
+            return $model->toArray();
+        }
+
+        return CepService::findByCep($cep);
+    }
+
+    /**
+     * Look up a CEP using only the local database, without ever calling the
+     * external providers (and therefore without writing to the database).
+     */
+    public static function findByCepInDatabase(?string $cep): array
+    {
+        $cep = self::sanitize($cep);
+
+        if ($cep === null) {
+            return CepSupport::getResult();
+        }
+
+        return self::query()->find($cep)?->toArray() ?? CepSupport::getResult();
+    }
+
+    /**
+     * Normalize and validate a raw CEP string. Returns null when the value is
+     * not a valid 8 digit numeric CEP, short-circuiting before any database or
+     * HTTP lookup.
+     */
+    public static function sanitize(?string $cep): ?string
+    {
+        if (empty($cep)) {
+            return null;
+        }
+
         $cep = mb_substr(str_pad(str_replace(['.', '-', '/', '(', ')', ' '], '', $cep), 8, '0', STR_PAD_LEFT), 0, 8);
 
-        if (mb_strlen($cep) < 8) {
-            return CepSupport::getResult();
+        if (! preg_match('/^\d{8}$/', $cep)) {
+            return null;
         }
 
-        try {
-            return self::query()->findOrFail($cep)->toArray();
-        } catch (ModelNotFoundException $ignored) {
-            return CepService::findByCep($cep);
+        return $cep;
+    }
+
+    public function isStale(): bool
+    {
+        $ttl = config('cep.cache_ttl');
+
+        if ($ttl === null) {
+            return false;
         }
+
+        if ($this->updated_at === null) {
+            return true;
+        }
+
+        return $this->updated_at->addSeconds((int) $ttl)->isPast();
     }
 
     public static function updateByCep(string $cep, string $state, string $city, string $neighborhood, string $street): void

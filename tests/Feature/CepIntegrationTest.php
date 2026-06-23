@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use JeffersonGoncalves\Cep\Models\Cep;
@@ -139,7 +140,7 @@ describe('Cep Integration Tests', function () {
     it('handles API timeout gracefully', function () {
         Http::fake([
             'https://brasilapi.com.br/api/cep/v1/01310100' => function () {
-                throw new \Illuminate\Http\Client\ConnectionException('Connection timeout');
+                throw new ConnectionException('Connection timeout');
             },
             'https://viacep.com.br/ws/01310100/json/' => Http::response([
                 'cep' => '01310-100',
@@ -176,10 +177,10 @@ describe('Cep Integration Tests', function () {
         // So we test them separately with proper mocking
         Http::fake([
             'https://brasilapi.com.br/api/cep/v1/12345678' => function () {
-                throw new \Illuminate\Http\Client\ConnectionException('Connection failed');
+                throw new ConnectionException('Connection failed');
             },
             'https://viacep.com.br/ws/12345678/json/' => function () {
-                throw new \Illuminate\Http\Client\ConnectionException('Connection failed');
+                throw new ConnectionException('Connection failed');
             },
             'https://cep.awesomeapi.com.br/json/12345678' => Http::response([
                 'code' => 'not_found',

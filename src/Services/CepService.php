@@ -11,57 +11,84 @@ abstract class CepService
 {
     public static function findByCep(?string $cep): array
     {
-        $cacert = ini_get('curl.cainfo') ?: ini_get('openssl.cafile');
-        $options = [];
-        if (! $cacert || ! file_exists($cacert)) {
-            $options['verify'] = false;
-        }
-        try {
-            $request = Http::timeout(5)->withOptions($options)->get("https://brasilapi.com.br/api/cep/v1/{$cep}")->json();
-            if (! empty($request['cep'])) {
-                Cep::updateByCep($cep, $request['state'], $request['city'], $request['neighborhood'] ?? '', $request['street'] ?? '');
+        foreach (self::providers() as $provider) {
+            try {
+                $request = Http::timeout(self::timeout())
+                    ->withOptions(self::httpOptions())
+                    ->get(($provider['url'])($cep))
+                    ->json();
 
-                return [
-                    'cep' => $cep,
-                    'state' => $request['state'],
-                    'city' => $request['city'],
-                    'neighborhood' => $request['neighborhood'] ?? '',
-                    'street' => $request['street'] ?? '',
-                ];
-            }
-        } catch (ConnectionException $ignored) {
-        }
-        try {
-            $request = Http::timeout(5)->withOptions($options)->get("https://viacep.com.br/ws/{$cep}/json/")->json();
-            if (! empty($request['cep'])) {
-                Cep::updateByCep($cep, $request['uf'], $request['localidade'], $request['bairro'] ?? '', $request['logradouro'] ?? '');
+                if (! empty($request['cep'])) {
+                    $address = ($provider['map'])($request);
 
-                return [
-                    'cep' => $cep,
-                    'state' => $request['uf'],
-                    'city' => $request['localidade'],
-                    'neighborhood' => $request['bairro'] ?? '',
-                    'street' => $request['logradouro'] ?? '',
-                ];
-            }
-        } catch (ConnectionException $ignored) {
-        }
-        try {
-            $request = Http::timeout(5)->withOptions($options)->get("https://cep.awesomeapi.com.br/json/{$cep}")->json();
-            if (! empty($request['cep'])) {
-                Cep::updateByCep($cep, $request['state'], $request['city'], $request['district'] ?? '', $request['address'] ?? '');
+                    Cep::updateByCep(
+                        $cep,
+                        $address['state'],
+                        $address['city'],
+                        $address['neighborhood'],
+                        $address['street']
+                    );
 
-                return [
-                    'cep' => $cep,
-                    'state' => $request['state'],
-                    'city' => $request['city'],
-                    'neighborhood' => $request['district'] ?? '',
-                    'street' => $request['address'] ?? '',
-                ];
+                    return ['cep' => $cep] + $address;
+                }
+            } catch (ConnectionException $ignored) {
             }
-        } catch (ConnectionException $ignored) {
         }
 
         return CepSupport::getResult();
+    }
+
+    /**
+     * The list of CEP providers, each describing how to build the request URL
+     * and how to map the provider response to a normalized address array.
+     *
+     * @return array<int, array{url: callable, map: callable}>
+     */
+    protected static function providers(): array
+    {
+        return [
+            [
+                'url' => fn (string $cep): string => "https://brasilapi.com.br/api/cep/v1/{$cep}",
+                'map' => fn (array $response): array => [
+                    'state' => $response['state'],
+                    'city' => $response['city'],
+                    'neighborhood' => $response['neighborhood'] ?? '',
+                    'street' => $response['street'] ?? '',
+                ],
+            ],
+            [
+                'url' => fn (string $cep): string => "https://viacep.com.br/ws/{$cep}/json/",
+                'map' => fn (array $response): array => [
+                    'state' => $response['uf'],
+                    'city' => $response['localidade'],
+                    'neighborhood' => $response['bairro'] ?? '',
+                    'street' => $response['logradouro'] ?? '',
+                ],
+            ],
+            [
+                'url' => fn (string $cep): string => "https://cep.awesomeapi.com.br/json/{$cep}",
+                'map' => fn (array $response): array => [
+                    'state' => $response['state'],
+                    'city' => $response['city'],
+                    'neighborhood' => $response['district'] ?? '',
+                    'street' => $response['address'] ?? '',
+                ],
+            ],
+        ];
+    }
+
+    protected static function timeout(): int
+    {
+        return (int) config('cep.timeout', 5);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected static function httpOptions(): array
+    {
+        return [
+            'verify' => (bool) config('cep.verify_ssl', true),
+        ];
     }
 }

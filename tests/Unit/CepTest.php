@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use JeffersonGoncalves\Cep\Models\Cep;
 
@@ -189,13 +190,13 @@ describe('Cep Model', function () {
         it('returns empty result when all APIs fail', function () {
             Http::fake([
                 'https://brasilapi.com.br/api/cep/v1/01310100' => function () {
-                    throw new \Illuminate\Http\Client\ConnectionException('Connection failed');
+                    throw new ConnectionException('Connection failed');
                 },
                 'https://viacep.com.br/ws/01310100/json/' => function () {
-                    throw new \Illuminate\Http\Client\ConnectionException('Connection failed');
+                    throw new ConnectionException('Connection failed');
                 },
                 'https://cep.awesomeapi.com.br/json/01310100' => function () {
-                    throw new \Illuminate\Http\Client\ConnectionException('Connection failed');
+                    throw new ConnectionException('Connection failed');
                 },
             ]);
 

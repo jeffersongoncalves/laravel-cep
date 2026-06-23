@@ -10,6 +10,7 @@ class CepServiceProvider extends PackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package->name('laravel-cep')
+            ->hasConfigFile()
             ->hasMigration('create_cep_table');
     }
 }
