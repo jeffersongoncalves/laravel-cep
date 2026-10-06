@@ -1,6 +1,6 @@
 <div class="filament-hidden">
 
-![Laravel Cep](https://raw.githubusercontent.com/jeffersongoncalves/laravel-cep/master/art/jeffersongoncalves-laravel-cep.png)
+![Laravel Cep](https://raw.githubusercontent.com/jeffersongoncalves/laravel-cep/main/art/jeffersongoncalves-laravel-cep.png)
 
 </div>
 
@@ -9,7 +9,7 @@
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeffersongoncalves)
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/jeffersongoncalves/laravel-cep.svg?style=flat-square)](https://packagist.org/packages/jeffersongoncalves/laravel-cep)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/jeffersongoncalves/laravel-cep/fix-php-code-style-issues.yml?branch=master&label=code%20style&style=flat-square)](https://github.com/jeffersongoncalves/laravel-cep/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amaster)
+[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/jeffersongoncalves/laravel-cep/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/jeffersongoncalves/laravel-cep/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/jeffersongoncalves/laravel-cep.svg?style=flat-square)](https://packagist.org/packages/jeffersongoncalves/laravel-cep)
 
 A simple and efficient Laravel package for querying Brazilian postal codes (CEP). This package provides an easy way to retrieve address information from Brazilian ZIP codes through multiple API providers with database storage.
