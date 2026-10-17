@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.0.1 - 2026-10-17
+
+The migration now ships as `create_cep_table.php.stub`, like the other packages. Publishing is unchanged: `php artisan vendor:publish --tag=cep-migrations`.
+
 ## v2.0.0 - 2026-08-01
 
 ### Security
